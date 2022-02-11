@@ -4,9 +4,12 @@ namespace App\Http\Resources\Product;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Order\Collection as OrderCollection;
+use App\Traits\ResourceFilterable;
 
 class Resource extends JsonResource
 {
+    use ResourceFilterable;
+    protected $model = 'Product';
     /**
      * Transform the resource into an array.
      *
@@ -15,17 +18,10 @@ class Resource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,      
-            'slug' => $this->slug,      
-            'description' => $this->description,      
-            'price' => $this->price,
-            'quantity' => $this->quantity,
-            // 'orders' => $this->orders,
-            'orders' => new OrderCollection($this->whenLoaded('orders')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,    
-        ];
+        $data =  $this->fields();
+        $data['quantity'] = $this->quantity;
+        $data['orders'] =  new OrderCollection($this->whenLoaded('orders'));
+            
+        return $data;
     }
 }

@@ -6,7 +6,7 @@ use App\Exceptions\CustomException;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
-use Illuminate\Support\Facades\DB;
+
 
 class OrderService
 {
@@ -19,12 +19,8 @@ class OrderService
 
     public function collection($request)
     {
-        $orders = $this->order;
-        $paginate = isset($request['paginate']) ? $request['paginate'] : env('PAGINATE');
-
-        if (isset($request['filter']['is_paid']) && $request['filter']['is_paid'] != '') {
-            $orders = $orders->where('is_paid', $request['filter']['is_paid']);
-        }
+        $orders = $this->order->getQB();
+        $paginate = isset($request['paginate']) ? $request['paginate'] : config('site.paginate');
 
         if ($paginate == -1) {
             $orders = $orders->get();
@@ -37,7 +33,7 @@ class OrderService
 
     public function resource($id)
     {
-        $order = $this->order->findOrFail($id);
+        $order = $this->order->getQB()->findOrFail($id);
         return $order;
     }
 

@@ -24,6 +24,7 @@ trait ResourceFilterable
         $fields = $classObj->getQueryFields();
         $hiddenFields = $classObj->getHidden();
         $casts = $classObj->getCasts();
+
         foreach ($fields as $field) {
             if (!in_array($field, $hiddenFields)) {
                 if (isset($casts[$field])) {
@@ -40,8 +41,10 @@ trait ResourceFilterable
                 } else {
                     $data[$field] = $this->$field;
                 }
+            
             }
         }
+
         return $data;
     }
 }

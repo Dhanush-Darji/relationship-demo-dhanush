@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\CustomException;
 use App\Models\Product;
 use Str;
 
@@ -17,13 +16,9 @@ class ProductService
 
     public function collection($request)
     {
-        $products = $this->product;
-        $paginate = isset($request['paginate']) ? $request['paginate'] : env('PAGINATE');
+        $products = $this->product->getQB();
 
-        if (isset($request['search']) && $request['search'] != '') {
-            $products->where('name', 'like', '%' . $request['search'] . '%')
-                ->orWhere('description', 'like', '%' . $request['search'] . '%');
-        }
+        $paginate = isset($request['paginate']) ? $request['paginate'] : config('site.paginate');
 
         if ($paginate == -1) {
             $products = $products->get();
@@ -36,7 +31,7 @@ class ProductService
 
     public function resource($id)
     {
-        $product = $this->product->findOrFail($id);
+        $product = $this->product->getQB()->findOrFail($id);
         return $product;
     }
 

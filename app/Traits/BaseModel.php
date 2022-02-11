@@ -26,6 +26,7 @@ trait BaseModel
         foreach ($_this->getFillable() as $field) {
             $fields[] = $field;
         }
+
         return $fields;
     }
 
@@ -43,6 +44,7 @@ trait BaseModel
                 $fields[] = $relationshipName . '.' . $field;
             }
         }
+
         return $fields;
     }
 
@@ -63,6 +65,7 @@ trait BaseModel
             ->allowedIncludes($this->getIncludes());
 
         $filters = $this->getQueryFields();
+
         if (isset($this->scopedFilters)) {
             foreach ($this->scopedFilters as $key => $value) {
                 array_push($filters, AllowedFilter::scope($value));
@@ -74,6 +77,10 @@ trait BaseModel
                 array_push($filters, AllowedFilter::exact($value));
             }
         }
+        if(isset($this->sortable)) {
+            $queryBuilder->allowedSorts($this->sortable);
+        }
+
         $queryBuilder->allowedFilters($filters);
         return $queryBuilder;
     }
